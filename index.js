@@ -29,6 +29,7 @@ async function run() {
     try {
         //collection here
         const userCollection = client.db('taskManagementDB').collection('users');
+        const addTaskCollection = client.db('taskManagementDB').collection('addTasks');
 
         // ------user collection here-------
         app.post('/user', async (req, res) => {
@@ -59,6 +60,12 @@ async function run() {
             const result = await userCollection.updateOne(filter, updateData);
             res.send(result);
 
+        })
+        // ------------addTask Collection here--------------
+        app.post('/add-task', async (req, res) => {
+            const task = req?.body;
+            const result = await addTaskCollection.insertOne(task);
+            res.send(result);
         })
 
 
