@@ -32,6 +32,11 @@ async function run() {
         const addTaskCollection = client.db('taskManagementDB').collection('addTasks');
 
         // ------user collection here-------
+        app.get('/total-user', async (req, res) => {
+            const result = await userCollection.find().toArray();
+            res.send(result);
+        })
+
         app.post('/user', async (req, res) => {
             const user = req?.body;
             const query = {
@@ -62,9 +67,8 @@ async function run() {
 
         })
         // ------------addTask Collection here--------------
-        app.post('/add-task', async (req, res) => {
-            const task = req?.body;
-            const result = await addTaskCollection.insertOne(task);
+        app.get('/previous-total-task', async (req, res) => {
+            const result = await addTaskCollection.find().toArray();
             res.send(result);
         })
 
@@ -76,6 +80,13 @@ async function run() {
             const result = await addTaskCollection.find(query).toArray();
             res.send(result);
         })
+
+        app.post('/add-task', async (req, res) => {
+            const task = req?.body;
+            const result = await addTaskCollection.insertOne(task);
+            res.send(result);
+        })
+
 
         app.delete('/task-delete/:id', async (req, res) => {
             const id = req.params.id;
