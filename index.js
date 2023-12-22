@@ -9,6 +9,8 @@ const port = process.env.PORT || 5000
 app.use(cors({
     origin: [
         'http://localhost:5173'
+        // 'https://taskmanagement-9bc84.web.app',
+        // 'https://taskmanagement-9bc84.firebaseapp.com'
     ]
 }));
 app.use(express.json())
@@ -67,6 +69,13 @@ async function run() {
 
         })
         // ------------addTask Collection here--------------
+        app.get('/todo/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id:new ObjectId(id)}
+            const result = await addTaskCollection.findOne(query);
+            res.send(result);
+        })
+        
         app.get('/previous-task/:email', async (req, res) => {
             const email = req.params.email;
             const query = {
@@ -75,10 +84,26 @@ async function run() {
             const result = await addTaskCollection.find(query).toArray();
             res.send(result);
         })
-
+        
         app.post('/add-task', async (req, res) => {
             const task = req?.body;
             const result = await addTaskCollection.insertOne(task);
+            res.send(result);
+        })
+
+        app.patch('/todo-update/:id', async (req, res) => {
+            const id = req.params.id;
+            const todo = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    title: todo?.title,
+                    descriptions: todo?.descriptions,
+                    priority: todo?.priority,
+                    priority: todo?.priority
+                },
+            };
+            const result = await addTaskCollection.updateOne(filter, updateDoc);
             res.send(result);
         })
 
@@ -90,9 +115,9 @@ async function run() {
             res.send(result);
         })
 
-
-
         
+
+
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
