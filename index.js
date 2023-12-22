@@ -8,9 +8,9 @@ const port = process.env.PORT || 5000
 // middleware
 app.use(cors({
     origin: [
-        'http://localhost:5173'
-        // 'https://taskmanagement-9bc84.web.app',
-        // 'https://taskmanagement-9bc84.firebaseapp.com'
+        // 'http://localhost:5173'
+        'https://taskmanagement-9bc84.web.app',
+        'https://taskmanagement-9bc84.firebaseapp.com'
     ]
 }));
 app.use(express.json())
@@ -81,7 +81,11 @@ async function run() {
             const query = {
                 email:email
             }
-            const result = await addTaskCollection.find(query).toArray();
+            const result = await addTaskCollection.find(query, {
+                sort: {
+                    _id: -1
+                }
+            }).toArray();
             res.send(result);
         })
         
